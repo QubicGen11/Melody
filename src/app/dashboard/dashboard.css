@@ -1,0 +1,131 @@
+/* styles/register.css */
+
+/* Header styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+  }
+  
+  .header .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e53e3e;
+  }
+  
+  .header .nav-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  
+  .header .nav-links a {
+    color: #4a5568;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .header .nav-links a:hover {
+    background-color: #edf2f7;
+  }
+  
+  .header .auth-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  
+  .header .auth-buttons a {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  .header .auth-buttons .login {
+    color: #e53e3e;
+    border: 1px solid #e53e3e;
+  }
+  
+  .header .auth-buttons .login:hover {
+    background-color: #e53e3e;
+    color: #ffffff;
+  }
+  
+  .header .auth-buttons .signup {
+    color: #ffffff;
+    background-color: #e53e3e;
+  }
+  
+  .header .auth-buttons .signup:hover {
+    background-color: #c53030;
+  }
+  
+  /* Menu styles */
+  .menu {
+    background-color: #e53e3e;
+    padding: 1rem 2rem;
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    overflow-x: auto;
+  }
+  
+  .menu-item {
+    color: #ffffff;
+    text-align: center;
+  }
+  
+  .menu-item .icon {
+    font-size: 2rem;
+  }
+  
+  .menu-item a {
+    color: #ffffff;
+    text-decoration: none;
+    margin-top: 0.5rem;
+    display: block;
+  }
+  
+  .menu-item a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Main content styles */
+  .main-content {
+    padding: 2rem;
+  }
+  
+  .main-content h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e53e3e;
+  }
+  
+  .main-content h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000000;
+  }
+  
+  .main-content p {
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+  }
+  
+  .main-content .image-container {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .main-content .image-container img {
+    width: 100%;
+    max-width: 600px;
+  }

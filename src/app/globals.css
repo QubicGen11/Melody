@@ -2,3 +2,103 @@
 @tailwind components;
 @tailwind utilities;
 
+/* globals.css */
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+@keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 40px, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+  }
+
+  @keyframes rotate360 {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes jelly {
+    0% {
+      transform: scale(1, 1);
+    }
+    25% {
+      transform: scale(0.9, 1.1);
+    }
+    50% {
+      transform: scale(1.1, 0.9);
+    }
+    75% {
+      transform: scale(0.95, 1.05);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+  
+  .icon-hover-rotate:hover .icon {
+    animation: rotate360 0.5s linear forwards, jelly 0.5s ease;
+  }
+
+
+  /* styles/carousel.css */
+  @keyframes flipIn {
+    0% {
+      transform: perspective(400px) rotateY(120deg);
+      opacity: 0;
+    }
+    100% {
+      transform: perspective(400px) rotateY(0deg);
+      opacity: 1;
+    }
+  }
+  
+  .slick-slide {
+    animation: flipIn 1s;
+  }
+  
+  .carousel-image-container {
+    perspective: 1000px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .carousel-image {
+    width: 100%;
+    transition: transform 20s ease, filter 0.5s ease;
+  }
+  
+  .carousel-image-container:hover .carousel-image {
+    transform: scale(1.09);
+  }
+
+  /* styles/globals.css */
+
+/* Keyframes for fade-slide-down animation */
+@keyframes fadeSlideDown {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Custom animation class for the header */
+  .animate-fade-slide-down {
+    animation: fadeSlideDown 1s ease-in-out;
+  }
