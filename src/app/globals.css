@@ -102,3 +102,12 @@
   .animate-fade-slide-down {
     animation: fadeSlideDown 1s ease-in-out;
   }
+
+  /* src/globals.css */
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
