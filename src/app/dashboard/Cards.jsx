@@ -1,66 +1,36 @@
 // src/app/dashboard/Cards.js
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
+import axios from 'axios'; // Import Axios for making API requests
+import { useRouter } from 'next/navigation'; // Import useRouter for routing
 import '../globals.css';
 import './cards.css'; // Import the CSS file for the cards
 
 const Cards = () => {
-  const [cards, setCards] = useState([
-    {
-      id: 1,
-      title: 'Looking for roommate in 1b1b near Disney spring, celebration Florida',
-      location: 'Kissimmee, Florida',
-      rentalType: 'Room',
-      price: '$920/month',
-      room: 'Single room',
-      availableFrom: '10 July 2024',
-      gender: 'Any',
-      adType: 'Offered',
-      postedBy: 'Raj on 07-09-2024',
-      imageUrl: 'https://res.cloudinary.com/defsu5bfc/image/upload/v1720884119/house_one_hlqjli.jpg',
-    },
-    {
-      id: 2,
-      title: 'Private Room in a 2Bed 2Bath apartment',
-      location: 'San Antonio, Texas',
-      rentalType: 'Room',
-      price: '$900/month',
-      room: 'Single room',
-      availableFrom: '16 September 2024',
-      gender: 'Female',
-      adType: 'Offered',
-      postedBy: 'Pravallika on 07-09-2024',
-      imageUrl: 'https://res.cloudinary.com/defsu5bfc/image/upload/v1720884543/house_two_m3gjiy.jpg',
-    },
-    {
-      id: 3,
-      title: 'New York, 3bhk bungalow',
-      location: 'Savoy, Massachusetts',
-      rentalType: 'Home',
-      price: '$150/week',
-      room: 'Single family home',
-      availableFrom: '3 July 2024',
-      leaseType: 'Long term',
-      adType: 'Offered',
-      postedBy: 'melodymocktail on 06-24-2024',
-      imageUrl: 'https://www.home-designing.com/wp-content/uploads/2018/05/stylish-mid-century-style-green-living-room.jpg',
-    },
-    {
-      id: 4,
-      title: 'Looking for a female flatmate.',
-      location: 'Cincinnati, Ohio',
-      rentalType: 'Room',
-      price: '$850/month',
-      room: 'Single room',
-      availableFrom: '20 August 2024',
-      gender: 'Female',
-      adType: 'Offered',
-      postedBy: 'Shreya on 06-24-2024',
-      imageUrl: 'https://thumbs.dreamstime.com/b/apartment-building-balconies-photoof-34869405.jpg',
-    },
-  ]);
+  const [cards, setCards] = useState([]);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    // Fetch data from API
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/house/houses');
+        setCards(response.data); // Assuming response.data is an array of house objects
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array ensures useEffect runs once on component mount
+
+  // Function to handle card click and navigate to single page
+  const handleCardClick = (id) => {
+    router.push(`/house/${id}`); // Assuming you have a route like `/house/[id]` for dynamic routing
+  };
 
   return (
     <div>
@@ -73,7 +43,7 @@ const Cards = () => {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-0 p-5" style={{ justifyItems: 'center' }}>
           {cards.map((card) => (
-            <div key={card.id} className="card bg-white rounded-lg shadow-md xl:w-10/12 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up">
+            <div key={card.id} className="card bg-white rounded-lg shadow-md xl:w-10/12 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up" onClick={() => handleCardClick(card.id)}>
               <div className="image-container">
                 <img
                   src={card.imageUrl}
@@ -84,7 +54,7 @@ const Cards = () => {
               <div className="p-2">
                 <p className="text-xs">{card.title}</p>
                 <p className="text-xs text-gray-500">
-                  <span className="text-red-600">📍</span> {card.location}{' '}
+                  <span className="text-red-600">📍</span> {card.address.city}, {card.address.state}{' '} {/* Fixed to access nested properties correctly */}
                   <span className="float-right">Rental Type: {card.rentalType}</span>
                 </p>
                 <p className="text-green-600 font-bold">Price: {card.price}</p>

@@ -1,11 +1,45 @@
-'use client';
+'use client'
 import React, { useState } from 'react';
 import Head from 'next/head';
-import '../register/register.css';
-import './login.css'
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation'; // Import useRouter from next/router
+import Cookies from 'js-cookie'; // Import js-cookie for managing cookies
 
 const Login = () => {
   const [loginWithEmail, setLoginWithEmail] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    
+    try {
+      const response = await axios.post('http://localhost:3000/api/user/login', {
+        email,
+        password
+      });
+
+      if (response.status === 200) {
+        toast.success('Login successful!');
+        
+        // Set email in a cookie
+        Cookies.set('userEmail', email, { expires: 7 }); // Expires in 7 days
+
+        // Redirect to dashboard page
+        router.push('/dashboard');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        toast.error('Invalid credentials. Please try again.');
+      } else {
+        toast.error('Login error: ' + error.message);
+      }
+      console.error('Login error:', error.message);
+    }
+  };
 
   return (
     <div>
@@ -13,6 +47,7 @@ const Login = () => {
         <title>Melody Mocktail</title>
         <link rel="icon" href="https://dgslk2men7iqd.cloudfront.net/641a96c0c92c0f734ea10dc3/0e63659978c275de9e89f65ca33cc1a2105345ac.png" type="image/png" />
       </Head>
+      <ToastContainer />
       <div className="flex flex-col lg:flex-row min-h-screen bg-[#fef8f7]">
         <div className="lg:flex lg:flex-col lg:justify-center lg:w-1/2 lg:fixed lg:h-full lg:p-16 lg:bg-[#fef8f7] animate-fade-in-left">
           <a href="/dashboard" className="mb-4 text-lg text-red-600 xl:relative xl:bottom-20 animate-slide-in-left">
@@ -40,7 +75,7 @@ const Login = () => {
           </div>
           <h2 className="mb-4 text-2xl font-semibold text-gray-700 animate-pulse">Welcome back</h2>
           <p className="mb-8 text-gray-500">Please enter your {loginWithEmail ? 'email' : 'phone number'}</p>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="flex items-center mb-4">
               <input
                 type="checkbox"
@@ -63,6 +98,8 @@ const Login = () => {
                   type="email"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
                 <label htmlFor="password" className="block mb-2 mt-4 text-sm font-medium text-gray-600">
                   Password
@@ -72,8 +109,10 @@ const Login = () => {
                   type="password"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
-                <button className="bg-red-500 w-full text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-red-600 transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mt-4">
+                <button type="submit" className="bg-red-500 w-full text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-red-600 transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 hover:animate-pulse active:animate-bounce mt-4">
                   Login
                 </button>
               </div>
