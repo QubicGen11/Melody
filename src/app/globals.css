@@ -111,3 +111,13 @@
     font-size: 1.5rem;
     cursor: pointer;
   }
+
+
+
+  .leMagnify span { animation-name: leMagnify }
+@keyframes leMagnify {
+    50% {
+        transform: scale(1.8);
+        letter-spacing: 26px
+    }
+}

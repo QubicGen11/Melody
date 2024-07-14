@@ -1,5 +1,4 @@
-// components/Cards.js
-'use client'
+'use client';
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
@@ -52,17 +51,23 @@ const Cards = () => {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-0 p-5" style={{ justifyItems: 'center' }}>
           {cards.map((card) => (
-            <div key={card.id} className="card bg-white mt-4 rounded-lg shadow-md xl:w-10/12 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up" onClick={() => handleCardClick(card.id)}>
+            <div key={card._id} className="card bg-white mt-4 rounded-lg shadow-md xl:w-10/12 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up" onClick={() => handleCardClick(card._id)}>
               <div className="image-container">
-                <img
-                  src={card.imageUrl}
-                  alt={card.title}
-                  className="w-full h-32 object-cover rounded-t-lg card-image"
-                />
+                {card.image ? (
+                  <img
+                    src={`data:image/jpeg;base64,${card.image}`}
+                    alt={card.title}
+                    className="w-full h-32 object-cover rounded-t-lg card-image"
+                  />
+                ) : (
+                  <div className="w-full h-32 flex items-center justify-center bg-gray-200 rounded-t-lg">
+                    No Image
+                  </div>
+                )}
               </div>
               <div className="p-2">
-                <Link href={`/flatdetails/${card.id}`}>
-                {card.title}
+                <Link href={`/flatdetails/${card._id}`}>
+                  {card.title}
                 </Link>
                 <p className="text-xs text-gray-500">
                   <span className="text-red-600">📍</span> {card.address.city}, {card.address.state}{' '}
@@ -71,18 +76,18 @@ const Cards = () => {
                 <p className="text-green-600 font-bold">Price: {card.price}</p>
                 <p className="text-xs text-gray-500">Room: {card.room}</p>
                 <p className="text-xs text-gray-500">Available from: {card.availableFrom}</p>
-                <p className="text-xs text-gray-500">Gender: {card.gender}</p>
+                <p className="text-xs text-gray-500">Gender: {card.preferredGender}</p>
                 <p className="text-xs text-gray-500">Ad type: {card.adType}</p>
-                <p className="text-xs text-gray-500">Posted by: {card.postedBy}</p>
+                <p className="text-xs text-gray-500">Posted by: {card.ownerName}</p>
                 <div className="actions flex gap-2">
                   <button className="bg-red-600 text-white px-2 py-2 rounded-lg mt-2 text-xs hover:bg-red-600 transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110">
                     Contact
                   </button>
-                  <button className='px-2 py-2 mt-2 rounded-lg bg-gray-300' onClick={() => handleBookmarkClick(email, card.id)}>
+                  <button className='px-2 py-2 mt-2 rounded-lg bg-gray-300' onClick={() => handleBookmarkClick(email, card._id)}>
                     Bookmark
                   </button>
                 </div>
-               </div>
+              </div>
             </div>
           ))}
         </div>

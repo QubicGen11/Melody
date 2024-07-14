@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
@@ -21,6 +21,7 @@ const Page = () => {
     locationType: '',
     addressState: '',
     addressCity: '',
+    image: null, // New state for image
   });
 
   const handleSubmit = async (e) => {
@@ -28,6 +29,9 @@ const Page = () => {
 
     try {
       const email = Cookies.get('userEmail'); // Retrieve userEmail from cookies
+
+      const base64Image = await convertToBase64(formData.image);
+
       const response = await axios.post('http://localhost:4000/api/house/houses', {
         email,
         title: formData.title,
@@ -56,6 +60,7 @@ const Page = () => {
           type: 'Point',
           coordinates: [-122.4194, 37.7749], // Sample coordinates
         },
+        image: base64Image,
       });
       console.log('Post created:', response.data);
       setFormData({
@@ -75,6 +80,7 @@ const Page = () => {
         locationType: '',
         addressState: '',
         addressCity: '',
+        image: null,
       });
     } catch (error) {
       console.error('Error creating post:', error);
@@ -83,11 +89,27 @@ const Page = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    const { name, value, files } = e.target;
+    if (name === 'image' && files.length > 0) {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: files[0],
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(',')[1]); // Extracting base64 part
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   return (
@@ -285,7 +307,7 @@ const Page = () => {
                     className="text-sm font-medium text-gray-900 block mb-2"
                   >
                     Ad Type
-                  </label>
+                    </label>
                   <input
                     type="text"
                     name="adType"
@@ -402,6 +424,22 @@ const Page = () => {
                     onChange={handleChange}
                     className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                     placeholder="CA"
+                    required
+                  />
+                </div>
+                <div className="col-span-6">
+                  <label
+                    htmlFor="image"
+                    className="text-sm font-medium text-gray-900 block mb-2"
+                  >
+                    Image
+                  </label>
+                  <input
+                    type="file"
+                    name="image"
+                    id="image"
+                    onChange={handleChange}
+                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5"
                     required
                   />
                 </div>
