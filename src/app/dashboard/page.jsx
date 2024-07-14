@@ -30,7 +30,7 @@ const Dashboard = () => {
           />
         </Head>
 
-        <Header/>
+       
       
         <div
           className="menu flex flex-wrap xl:h-44 justify-center items-center gap-8 p-6 overflow-x-auto mt-[110px]"

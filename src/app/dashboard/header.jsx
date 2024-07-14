@@ -4,32 +4,31 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import "../globals.css";
 import "./dashboard.css";
-import PostAdModal from "./PostAdModal"; // Import the modal component
-import Link from "next/link";
+ import Link from "next/link";
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userName, setUserName] = useState("");
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const email = Cookies.get('userEmail'); // Assuming the email is stored in a cookie named 'userEmail'
+    const email = Cookies.get('userEmail');
     if (email) {
-      axios.get(`http://localhost:3000/api/user/${email}`)
+      axios.get(`http://localhost:4000/api/user/${email}`)
         .then(response => {
-          setUserName(response.data.user.name); // Adjust according to your backend response structure
+          setUserName(response.data.user.name);
         })
         .catch(error => {
           console.error("Error fetching user data:", error);
         });
     }
-
-    // Add event listener to close dropdown on click outside
+  
     document.addEventListener('click', handleClickOutside);
-
+  
     return () => {
       document.removeEventListener('click', handleClickOutside);
     };
   }, []);
+  
 
   const toggleDropdown = () => {
     setIsModalOpen(!isModalOpen);
@@ -58,13 +57,13 @@ const Header = () => {
         </a>
 
         <nav className="nav-links flex space-x-4 mt-3 xl:ml-auto xl:mr-7">
-          <a
-            href="#"
-            onClick={toggleDropdown} // Toggle dropdown on click
+          <Link
+              href={'/createpost'}
+              // Toggle dropdown on click
             className="hover:bg-gray-100 hidden md:block transform transition duration-300 ease-in-out hover:scale-125"
           >
             Post an Ad
-          </a>
+          </Link>
           <a
             href="#"
             className="hover:bg-gray-100 hidden md:block transform transition duration-300 ease-in-out hover:scale-125"
@@ -103,9 +102,9 @@ const Header = () => {
                   </div>
                 </a>
                 <hr className="border-gray-200 " />
-                <a href="#" className="block px-4 py-3 text-sm text-gray-600     ">
+                <Link href="/listings" className="block px-4 py-3 text-sm text-gray-600     ">
                   My Listings
-                </a>
+                </Link>
                 <a href="#" className="block px-4 py-3 text-sm text-gray-600     ">
                   My Profile
                 </a>

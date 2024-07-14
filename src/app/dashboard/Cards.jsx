@@ -1,35 +1,44 @@
-// src/app/dashboard/Cards.js
-'use client';
-
+// components/Cards.js
+'use client'
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
-import axios from 'axios'; // Import Axios for making API requests
-import { useRouter } from 'next/navigation'; // Import useRouter for routing
+import axios from 'axios';
+import { useRouter } from 'next/navigation'; // Corrected import
+import Cookies from 'js-cookie';
+import Link from 'next/link'; // Added import for Link
 import '../globals.css';
-import './cards.css'; // Import the CSS file for the cards
+import './cards.css';
 
 const Cards = () => {
   const [cards, setCards] = useState([]);
-
   const router = useRouter();
+  const email = Cookies.get('userEmail');
 
   useEffect(() => {
-    // Fetch data from API
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/house/houses');
-        setCards(response.data); // Assuming response.data is an array of house objects
+        const response = await axios.get('http://localhost:4000/api/house/houses');
+        setCards(response.data);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures useEffect runs once on component mount
+  }, []);
 
-  // Function to handle card click and navigate to single page
+  const handleBookmarkClick = async (userId, houseId) => {
+    try {
+      await axios.post(`http://localhost:4000/api/user/${userId}/bookmarks/${houseId}`);
+      // Optionally, you can update the UI to reflect the bookmarked state
+      console.log('Bookmark added successfully');
+    } catch (error) {
+      console.error('Error adding bookmark:', error.message);
+    }
+  };
+
   const handleCardClick = (id) => {
-    router.push(`/house/${id}`); // Assuming you have a route like `/house/[id]` for dynamic routing
+    router.push(`/flatdetails/${id}`); // Navigate programmatically
   };
 
   return (
@@ -43,7 +52,7 @@ const Cards = () => {
         </h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-0 p-5" style={{ justifyItems: 'center' }}>
           {cards.map((card) => (
-            <div key={card.id} className="card bg-white rounded-lg shadow-md xl:w-10/12 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up" onClick={() => handleCardClick(card.id)}>
+            <div key={card.id} className="card bg-white mt-4 rounded-lg shadow-md xl:w-10/12 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up" onClick={() => handleCardClick(card.id)}>
               <div className="image-container">
                 <img
                   src={card.imageUrl}
@@ -52,9 +61,11 @@ const Cards = () => {
                 />
               </div>
               <div className="p-2">
-                <p className="text-xs">{card.title}</p>
+                <Link href={`/flatdetails/${card.id}`}>
+                {card.title}
+                </Link>
                 <p className="text-xs text-gray-500">
-                  <span className="text-red-600">📍</span> {card.address.city}, {card.address.state}{' '} {/* Fixed to access nested properties correctly */}
+                  <span className="text-red-600">📍</span> {card.address.city}, {card.address.state}{' '}
                   <span className="float-right">Rental Type: {card.rentalType}</span>
                 </p>
                 <p className="text-green-600 font-bold">Price: {card.price}</p>
@@ -63,10 +74,15 @@ const Cards = () => {
                 <p className="text-xs text-gray-500">Gender: {card.gender}</p>
                 <p className="text-xs text-gray-500">Ad type: {card.adType}</p>
                 <p className="text-xs text-gray-500">Posted by: {card.postedBy}</p>
-                <button className="bg-red-600 text-white px-2 py-1 rounded-lg mt-2 text-xs hover:bg-red-600 transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110 ">
-                  Contact
-                </button>
-              </div>
+                <div className="actions flex gap-2">
+                  <button className="bg-red-600 text-white px-2 py-2 rounded-lg mt-2 text-xs hover:bg-red-600 transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110">
+                    Contact
+                  </button>
+                  <button className='px-2 py-2 mt-2 rounded-lg bg-gray-300' onClick={() => handleBookmarkClick(email, card.id)}>
+                    Bookmark
+                  </button>
+                </div>
+               </div>
             </div>
           ))}
         </div>
