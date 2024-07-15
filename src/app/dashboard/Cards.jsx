@@ -1,4 +1,3 @@
-'use client';
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
@@ -26,10 +25,9 @@ const Cards = () => {
     fetchData();
   }, []);
 
-  const handleBookmarkClick = async (userId, houseId) => {
+  const handleBookmarkClick = async (userEmail, houseId) => {
     try {
-      await axios.post(`http://localhost:4000/api/user/${userId}/bookmarks/${houseId}`);
-      // Optionally, you can update the UI to reflect the bookmarked state
+      await axios.post(`http://localhost:4000/api/user/${userEmail}/bookmarks/${houseId}`);
       console.log('Bookmark added successfully');
     } catch (error) {
       console.error('Error adding bookmark:', error.message);
@@ -37,7 +35,7 @@ const Cards = () => {
   };
 
   const handleCardClick = (id) => {
-    router.push(`/flatdetails/${id}`); // Navigate programmatically
+    router.push(`/house/${id}`); // Navigate programmatically
   };
 
   return (
@@ -66,8 +64,8 @@ const Cards = () => {
                 )}
               </div>
               <div className="p-2">
-                <Link href={`/flatdetails/${card._id}`}>
-                  {card.title}
+                <Link href={`/house/${card._id}`}>
+                  <p className="text-blue-500 hover:underline">{card.title}</p>
                 </Link>
                 <p className="text-xs text-gray-500">
                   <span className="text-red-600">📍</span> {card.address.city}, {card.address.state}{' '}
@@ -83,7 +81,13 @@ const Cards = () => {
                   <button className="bg-red-600 text-white px-2 py-2 rounded-lg mt-2 text-xs hover:bg-red-600 transform transition-all duration-500 ease-in-out hover:scale-110 hover:brightness-110">
                     Contact
                   </button>
-                  <button className='px-2 py-2 mt-2 rounded-lg bg-gray-300' onClick={() => handleBookmarkClick(email, card._id)}>
+                  <button
+                    className='px-2 py-2 mt-2 rounded-lg bg-gray-300'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleBookmarkClick(email, card._id);
+                    }}
+                  >
                     Bookmark
                   </button>
                 </div>

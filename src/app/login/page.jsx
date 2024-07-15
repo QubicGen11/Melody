@@ -1,11 +1,11 @@
-'use client'
+'use client';
 import React, { useState } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useRouter } from 'next/navigation'; // Import useRouter from next/router
-import Cookies from 'js-cookie'; // Import js-cookie for managing cookies
+import Cookies from 'js-cookie';
 
 const Login = () => {
   const [loginWithEmail, setLoginWithEmail] = useState(true);
@@ -15,7 +15,7 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     try {
       const response = await axios.post('http://localhost:4000/api/user/login', {
         email,
@@ -24,12 +24,14 @@ const Login = () => {
 
       if (response.status === 200) {
         toast.success('Login successful!');
-        
+
         // Set email in a cookie
         Cookies.set('userEmail', email, { expires: 7 }); // Expires in 7 days
 
-        // Redirect to dashboard page
-        router.push('/dashboard');
+        // Redirect to dashboard page after a short delay
+        setTimeout(() => {
+          router.push('/dashboard');
+        }, 1000); // 3 seconds delay
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {

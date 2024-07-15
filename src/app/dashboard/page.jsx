@@ -1,4 +1,3 @@
-// src/app/dashboard/Dashboard.js
 "use client";
 
 import React, { useState } from "react";
@@ -6,20 +5,19 @@ import Head from "next/head";
 import dynamic from "next/dynamic";
 import "../globals.css";
 import "./dashboard.css";
-import Cards from "./Cards";
 import PostAdModal from "./PostAdModal"; // Import the modal component
 import Header from "./header";
 import Footer from "./footer";
 import ComingSoon from "./ComingSoon";
 import Blogs from "./blogPosts";
+import Cards from "./Cards";
+
 
 const Carousel = dynamic(() => import("./Carousel"), {
   ssr: false,
 });
 
 const Dashboard = () => {
-
-
   return (
     <>
       <div>
@@ -31,9 +29,7 @@ const Dashboard = () => {
             type="image/png"
           />
         </Head>
-
-       
-      
+        <Header />
         <div
           className="menu flex flex-wrap xl:h-44 justify-center items-center gap-8 p-6 overflow-x-auto mt-[110px]"
           style={{ backgroundColor: "#bb1017" }}
@@ -114,20 +110,14 @@ const Dashboard = () => {
           <Carousel />
           <div className="image-container flex justify-center"></div>
         </main>
-
       </div>
-      <div >
-        <a href="/flatdetails">
-        <Cards />
-        
-        </a>
+      <div>
+          <Cards />
       </div>
 
-<ComingSoon/>
-
-<Blogs/>
-      {/* <PostAdModal isOpen={isModalOpen} onRequestClose={closeModal} /> */}
-      <Footer/>
+      <ComingSoon />
+      <Blogs />
+      <Footer />
     </>
   );
 };

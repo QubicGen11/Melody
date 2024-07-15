@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import '../globals.css';
@@ -13,6 +14,7 @@ const metadata = {
 };
 
 const Register = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -46,6 +48,9 @@ const Register = () => {
         companyName: '',
         role: ''
       });
+      setTimeout(() => {
+        router.push('/login'); // Redirect to login page
+      }, 1000); // Wait for 3 seconds
     } catch (error) {
       console.error('Error registering user:', error);
       toast.error('Error registering user. Please try again.');

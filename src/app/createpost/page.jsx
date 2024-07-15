@@ -2,6 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +26,8 @@ const Page = () => {
     addressCity: '',
     image: null, // New state for image
   });
+
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,7 +67,13 @@ const Page = () => {
         },
         image: base64Image,
       });
+
       console.log('Post created:', response.data);
+      toast.success('Post created successfully!');
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 500);
+
       setFormData({
         title: '',
         description: '',
@@ -84,7 +95,7 @@ const Page = () => {
       });
     } catch (error) {
       console.error('Error creating post:', error);
-      // Optionally, handle errors here (e.g., show an error message)
+      toast.error('Error creating post. Please try again.');
     }
   };
 
@@ -307,7 +318,7 @@ const Page = () => {
                     className="text-sm font-medium text-gray-900 block mb-2"
                   >
                     Ad Type
-                    </label>
+                  </label>
                   <input
                     type="text"
                     name="adType"
@@ -458,6 +469,7 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
