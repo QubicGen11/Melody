@@ -4,26 +4,26 @@ import axios from "axios";
 import Cookies from 'js-cookie';
 import Header from "../dashboard/header";
 
-const Page = () => {
-  const [houses, setHouses] = useState([]);
+const Bookmarks = () => {
+  const [bookmarkedHouses, setBookmarkedHouses] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const email = Cookies.get('userEmail'); // Assuming the email is stored in a cookie named 'userEmail'
+    const email = Cookies.get('userEmail');
     if (email) {
-      axios.get(`http://localhost:4000/api/house/houses/user/${email}`)
+      axios.get(`http://localhost:4000/api/user/${email}/bookmarks`)
         .then(response => {
           if (response.data && Array.isArray(response.data)) {
-            setHouses(response.data); // Assuming the response data is an array of houses
+            setBookmarkedHouses(response.data);
           } else {
-            setHouses([]);
+            setBookmarkedHouses([]);
           }
         })
         .catch(error => {
           if (error.response && error.response.data && error.response.data.error) {
             setError(error.response.data.error);
           } else {
-            setError("Error fetching house data");
+            setError("Error fetching bookmarked house data");
           }
         });
     } else {
@@ -32,7 +32,6 @@ const Page = () => {
   }, []);
 
   const handleCardClick = (id) => {
-    // Navigate to the house details page based on the card id
     window.location.href = `/house/${id}`;
   };
 
@@ -43,10 +42,10 @@ const Page = () => {
         <div className="grid grid-cols-1 mt-24 md:grid-cols-3 gap-4 justify-center">
           {error ? (
             <p className="text-center text-red-500 mt-8">{error}</p>
-          ) : houses.length === 0 ? (
-            <p className="text-center text-gray-500 mt-8">There are no listings from you.</p>
+          ) : bookmarkedHouses.length === 0 ? (
+            <p className="text-center text-gray-500 mt-8">You have no bookmarked listings.</p>
           ) : (
-            houses.map((house) => (
+            bookmarkedHouses.map((house) => (
               <div key={house._id} className="card bg-white rounded-lg shadow-md xl:w-10/12 m-4 hover:shadow-2xl transition-transform transform hover:scale-105 fade-in-up" onClick={() => handleCardClick(house._id)}>
                 <div className="image-container">
                   {house.image ? (
@@ -72,7 +71,7 @@ const Page = () => {
                   <p className="text-xs text-gray-500">Available from: {house.availableFrom.split('T')[0]}</p>
                   <p className="text-xs text-gray-500">Gender: {house.gender}</p>
                   <p className="text-xs text-gray-500">Ad type: {house.adType}</p>
-                  <p className="text-xs text-gray-500">Posted by: {house.ownerName}</p>
+                  <p className="text-xs text-gray-500">Posted by: {house.postedBy}</p>
                   <p className="text-xs text-gray-500">Amenities: {house.amenities.join(', ')}</p>
                   <p className="text-xs text-gray-500">Owner: {house.ownerName}</p>
                   <p className="text-xs text-gray-500">Owner Phone: {house.ownerPhone}</p>
@@ -89,4 +88,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default Bookmarks;

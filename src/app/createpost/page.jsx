@@ -5,6 +5,7 @@ import Cookies from 'js-cookie';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import Header from '../dashboard/header';
 
 const Page = () => {
   const [formData, setFormData] = useState({
@@ -125,6 +126,7 @@ const Page = () => {
 
   return (
     <>
+    <Header/>
       <div className="content mt-24">
         <div className="bg-white border border-4 rounded-lg shadow relative mt-20">
           <div className="flex items-start justify-between p-5 border-b rounded-t">

@@ -5,19 +5,31 @@ import { useRouter, usePathname } from 'next/navigation';
 import Head from 'next/head';
 import Header from '@/app/dashboard/header';
 import Footer from '@/app/dashboard/footer';
+import Modal from 'react-modal';
+import { AiOutlineEdit } from 'react-icons/ai';
+import './house.css'
 
 const DetailedCardView = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [slug, setSlug] = useState('');
   const [cardDetails, setCardDetails] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    price: '',
+    availableFrom: '',
+    overview: '',
+    amenities: ''
+  });
 
   useEffect(() => {
+    Modal.setAppElement('body');
+
     if (pathname) {
       const pathParts = pathname.split('/');
       const slugPart = pathParts[pathParts.length - 1];
       setSlug(slugPart);
-      console.log(slugPart); // Should correctly log the slug part
     }
   }, [pathname]);
 
@@ -26,7 +38,15 @@ const DetailedCardView = () => {
       const fetchHouseDetails = async () => {
         try {
           const response = await axios.get(`http://localhost:4000/api/house/houses/id/${slug}`);
+          const { title, price, availableFrom, overview, amenities, image } = response.data;
           setCardDetails(response.data);
+          setFormData({
+            title: title || '',
+            price: price || '',
+            availableFrom: availableFrom ? availableFrom.split('T')[0] : '',
+            overview: overview || '',
+            amenities: amenities ? amenities.join(', ') : ''
+          });
         } catch (error) {
           console.error('Error fetching house details:', error.message);
         }
@@ -36,8 +56,41 @@ const DetailedCardView = () => {
     }
   }, [slug]);
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await axios.put(`http://localhost:4000/api/house/houses/image/${slug}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setCardDetails(response.data);
+    } catch (error) {
+      console.error('Error uploading image:', error.message);
+    }
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.put(`http://localhost:4000/api/house/houses/${slug}`, formData);
+      setCardDetails(response.data);
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error updating house details:', error.message);
+    }
+  };
+
   if (!cardDetails) {
-    return <div>Loading...</div>; // Placeholder for loading state
+    return <div>Loading...</div>;
   }
 
   const renderLocation = (location) => {
@@ -67,7 +120,13 @@ const DetailedCardView = () => {
       <div className="container mx-auto p-6 mt-[110px] md:mt-[150px]">
         <div className="flex flex-col lg:flex-row rounded-xl p-6 border border-black">
           <div className="w-full lg:w-3/5 pr-0 lg:pr-6">
-            <h1 className="text-3xl font-bold mb-2">{cardDetails.title}</h1>
+            <div className="flex justify-between">
+              <h1 className="text-3xl font-bold mb-2">{cardDetails.title}</h1>
+              <AiOutlineEdit
+                className="text-2xl cursor-pointer"
+                onClick={() => setIsEditing(true)}
+              />
+            </div>
             <div className="flex items-center mt-2">
               <span className="text-red-600 mr-2">📍</span>
               {renderLocation(cardDetails.location)}
@@ -188,6 +247,91 @@ const DetailedCardView = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={isEditing}
+        onRequestClose={() => setIsEditing(false)}
+        contentLabel="Edit House Details"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <h2 className="text-xl font-bold mb-4">Edit House Details</h2>
+        <form onSubmit={handleFormSubmit}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Title</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Price</label>
+            <input
+              type="text"
+              name="price"
+              value={formData.price}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Available From</label>
+            <input
+              type="date"
+              name="availableFrom"
+              value={formData.availableFrom}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Overview</label>
+            <textarea
+              name="overview"
+              value={formData.overview}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Amenities</label>
+            <input
+              type="text"
+              name="amenities"
+              value={formData.amenities}
+              onChange={handleInputChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Image</label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsEditing(false)}
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
       <Footer />
     </>
   );

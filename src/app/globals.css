@@ -121,3 +121,20 @@
         letter-spacing: 26px
     }
 }
+
+.signup:hover {
+  animation: hoverPulse 1s infinite;
+  background-color: red;
+}
+
+.signup:active {
+  animation: bounce 1s;
+}
+
+.login:hover {
+  animation: scaleUp 0.3s forwards;
+}
+
+.login:active {
+  animation: bounce 1s;
+}

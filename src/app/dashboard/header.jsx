@@ -5,11 +5,15 @@ import Cookies from 'js-cookie';
 import "../globals.css";
 import "./dashboard.css";
 import Link from "next/link";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { useRouter } from 'next/navigation'; // Import useRouter
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userName, setUserName] = useState("");
   const dropdownRef = useRef(null);
+  const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
     const email = Cookies.get('userEmail');
@@ -44,10 +48,17 @@ const Header = () => {
     // Perform logout actions, e.g., clearing cookies, local storage, etc.
     Cookies.remove('userEmail');
     setUserName("");
+    toast.success("Logout successful");
+
+    // Redirect to login page after 2 seconds
+    setTimeout(() => {
+      router.push('/login');
+    }, 2000);
   };
 
   return (
     <div>
+      <ToastContainer /> {/* Add ToastContainer here */}
       <header className="header flex flex-wrap items-center justify-between px-6 py-4 bg-white border-b border-gray-200 fixed top-0 left-0 w-full z-50 animate-fade-slide-down">
         <a href="/dashboard">
           <img
@@ -58,7 +69,7 @@ const Header = () => {
         </a>
 
         <nav className="nav-links flex space-x-4 mt-3 xl:ml-auto xl:mr-7">
-         {userName && <Link
+          {userName && <Link
             href={'/createpost'}
             className="hover:bg-gray-100 hidden md:block transform transition duration-300 ease-in-out hover:scale-125"
           >
@@ -78,7 +89,7 @@ const Header = () => {
           </a>
           <a
             href="#"
-            className="hover:bg-gray-100 hidden md:block transform duration-300 ease-in-out hover:scale-125"
+            className="hidden md:block transition duration-300 ease-in-out  hover:scale-125"
           >
             Contact us
           </a>
@@ -111,10 +122,10 @@ const Header = () => {
                   <a href="#" className="block px-4 py-3 text-sm text-gray-600">
                     My Bookings
                   </a>
-                  <a href="#" className="block px-4 py-3 text-sm text-gray-600">
+                  <a href="/bookings" className="block px-4 py-3 text-sm text-gray-600">
                     Bookmarks
                   </a>
-                  <Link href="/login" className="block px-4 py-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white" onClick={handleLogout}>
+                  <Link href="" className="block px-4 py-3 text-sm text-gray-600 capitalize transition-colors duration-300 transform dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white" onClick={handleLogout}>
                     Logout
                   </Link>
                 </div>
@@ -122,13 +133,14 @@ const Header = () => {
             </div>
           ) : (
             <div className="flex space-x-4">
-              <Link href="/login" className="px-4 py-2 text-sm text-gray-600 font-semibold border border-transparent rounded-md focus:border-blue-500 focus:ring-opacity-40 dark:focus:ring-opacity-40 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring focus:outline-none">
-                Login
-              </Link>
-              <Link href="/signup" className="px-4 py-2 text-sm text-gray-600 font-semibold border border-transparent rounded-md focus:border-blue-500 focus:ring-opacity-40 dark:focus:ring-opacity-40 focus:ring-blue-300 dark:focus:ring-blue-400 focus:ring focus:outline-none">
-                Signup
-              </Link>
-            </div>
+            <Link href="/login" className=" px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded text-xs md:text-base transform transition duration-300 ease-in-out hover:scale-125" style={{color:'white'}}>
+              Login
+            </Link>
+            <Link href="/register" className="signup px-4 py-2 bg-red-600 text-white hover:bg-red-700 rounded text-xs md:text-base transform transition duration-300 ease-in-out hover:scale-110" style={{color:'white'}}>
+              Signup
+            </Link>
+            
+          </div>
           )}
         </nav>
       </header>

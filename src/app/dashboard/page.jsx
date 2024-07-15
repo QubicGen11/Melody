@@ -34,7 +34,7 @@ const Dashboard = () => {
           className="menu flex flex-wrap xl:h-44 justify-center items-center gap-8 p-6 overflow-x-auto mt-[110px]"
           style={{ backgroundColor: "#bb1017" }}
         >
-          <div className="menu-item text-center text-white hover:bg-[rgba(0,0,0,0.2)] rounded-lg xl:w-28 xl:p-3">
+          <div className="menu-item icon-hover-rotate text-center text-white hover:bg-[rgba(0,0,0,0.2)] rounded-lg xl:w-28 xl:p-3">
             <div className="icon-wrapper flex justify-center">
               <div className="icon text-3xl bg-white p-2 xl:w-14 rounded-full">
                 🏠
